@@ -28,6 +28,7 @@ def test_capitalize_negative_only_spaces():
 
 # --- trim ---
 
+
 def test_trim_positive_leading_spaces():
     # позитивный: пробелы в начале
     assert utils.trim("   skypro") == "skypro"
@@ -49,6 +50,7 @@ def test_trim_negative_only_spaces_all_removed():
 
 
 # --- contains ---
+
 
 def test_contains_positive_symbol_present():
     # позитивный: символ есть
@@ -77,6 +79,7 @@ def test_contains_negative_empty_symbol():
 
 
 # --- delete_symbol ---
+
 
 def test_delete_symbol_positive_single_occurrence():
     # позитивный: один символ
