@@ -1,0 +1,63 @@
+DEFECTS REPORT
+Project: StringUtils utility
+Author: Terenteva
+Date: 2026-10-04
+
+1. DEFECT: trim() не удаляет все виды пробельных символов
+   Description:
+     Метод trim() удаляет только обычные пробелы (" "), но не другие пробельные символы
+     (табуляция \t, перевод строки \n и т.п.).
+   Steps to reproduce:
+     utils.trim("\t\tskypro")
+   Actual result:
+     "\t\tskypro" (символы не удалены)
+   Expected result:
+     "skypro" (все ведущие пробельные символы удалены)
+   Severity: Medium
+   Recommendation:
+     Использовать string.lstrip() или явно обрабатывать все whitespace-символы.
+
+2. DEFECT: contains() некорректно обрабатывает пустой символ
+   Description:
+     При передаче пустой строки в качестве symbol метод возвращает True,
+     потому что str.index("") всегда возвращает 0.
+     Это нелогично: «пустой символ» не должен считаться «найденным».
+   Steps to reproduce:
+     utils.contains("SkyPro", "")
+   Actual result:
+     True
+   Expected result:
+     False (или явное исключение, если пустая подстрока недопустима)
+   Severity: Low/Medium (зависит от требований)
+   Recommendation:
+     Добавить проверку: if symbol == "": return False
+
+3. DEFECT: delete_symbol() зависит от contains(), что избыточно
+   Description:
+     В методе delete_symbol сначала вызывается contains(), а затем replace.
+     replace безопасно работает, даже если подстроки нет, поэтому проверка не нужна.
+     Кроме того, эта зависимость делает поведение delete_symbol зависимым от бага в contains().
+   Steps to reproduce:
+     utils.delete_symbol("SkyPro", "Z")
+   Actual result:
+     Работает, но через лишний вызов contains()
+   Expected result:
+     Прямой вызов replace без предварительной проверки
+   Severity: Low
+   Recommendation:
+     Упростить до: return string.replace(symbol, "")
+
+4. DEFECT: отсутствует обработка None и не-строковых типов
+   Description:
+     Методы не проверяют тип аргумента. Передача None или числа вызовет исключение.
+   Steps to reproduce:
+     utils.capitalize(None)
+     utils.trim(123)
+   Actual result:
+     TypeError или AttributeError
+   Expected result:
+     Либо явная проверка типа и исключение с понятным сообщением,
+     либо (по ТЗ) возврат None/пустой строки, если это допустимо.
+   Severity: Medium
+   Recommendation:
+     Добавить валидацию типов и понятные сообщения об ошибках.
